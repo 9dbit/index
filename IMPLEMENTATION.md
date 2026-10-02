@@ -14,8 +14,14 @@
 
 ## Deployment gate
 - [x] Browser regression complete (3 Playwright checks)
-- [ ] GitHub feature branch pushed
-- [ ] Railway demo deployment healthy and visually checked
+- [x] GitHub feature branch pushed: `feat/index-foundation`, application commit `2af1452`
+- [x] Railway demo deployment healthy; HTTP 200 and all three remote browser flows passed
+- Public demo: https://index-web-production-2e5b.up.railway.app
+- GitHub draft PR: https://github.com/9dbit/index/pull/1
+- GitHub CI: SUCCESS (run 37063185188)
+- App deployment: SUCCESS (302fb9be-6a84-41d0-96bb-b0c10e7608e1)
+- Live mode without Supabase configuration: dashboard/write routes blocked, health 503
+- Browser checks in this execution environment require its HTTPS proxy; normal curl validated TLS and HTTP health.
 
 ## Required before calling v1 production-ready
 - [ ] User selects INDEX Supabase project / organization
