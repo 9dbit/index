@@ -1,0 +1,136 @@
+import type { Dataset, Site, Metric, Keyword } from "@/types";
+const names = [
+  "PC Gaming Lab",
+  "Esports Daily",
+  "FPS Database",
+  "Mobile Games Asia",
+  "Streaming Creator Hub",
+  "Hardware Arena",
+];
+const domains = [
+  "pcgaminglab.com",
+  "esportsdaily.id",
+  "fpsdatabase.com",
+  "mobilegamesasia.com",
+  "streamingcreatorhub.com",
+  "hardwarearena.net",
+];
+const niches = [
+  "Gaming",
+  "Esports",
+  "Database",
+  "Mobile Gaming",
+  "Streaming",
+  "Hardware",
+];
+const terms = [
+  "best gaming pc build",
+  "esports tournaments indonesia",
+  "best fps loadout",
+  "mobile games asia",
+  "streaming setup guide",
+  "best mechanical keyboard",
+];
+const sites: Site[] = names.map((name, i) => ({
+  id: `demo-${i + 1}`,
+  name,
+  domain: domains[i],
+  url: `https://${domains[i]}`,
+  tier: i === 0 ? 1 : i % 2 === 0 ? 3 : 2,
+  niche: niches[i],
+  status: i === 3 ? "Critical" : i === 2 || i === 5 ? "Attention" : "Healthy",
+  primary_keyword: terms[i],
+  screenshot_url: `/previews/site-${i + 1}.jpg`,
+  archived: false,
+  scores: {
+    technical: 96 - i * 3,
+    content: 89 - i,
+    index: 94 - i * 4,
+    authority: 81 - i * 2,
+    performance: 92 - i * 4,
+    cwv: 93 - i * 3,
+  },
+  rank: [4, 7, 12, 18, 6, 11][i],
+  position: 12.4 + i * 1.6,
+  clicks: 28300 - i * 3100,
+  impressions: 182000 - i * 16000,
+  pages: 412 - i * 33,
+  indexed: 386 - i * 37,
+  growth: i === 3 ? -32 : 24 - i * 2,
+}));
+const metrics: Metric[] = sites.flatMap((s, i) =>
+  Array.from({ length: 730 }, (_, d) => {
+    const factor = 0.35 + d / 1100 + Math.sin(d / 9 + i) * 0.08;
+    return {
+      site_id: s.id,
+      date: new Date(Date.UTC(2024, 9, 3 + d)).toISOString().slice(0, 10),
+      clicks: Math.round(((s.clicks ?? 0) / 30) * factor),
+      impressions: Math.round(((s.impressions ?? 0) / 30) * factor),
+      avg_position: +(s.position! + 3 - d / 240 + Math.sin(d / 13)).toFixed(1),
+      total_pages: s.pages!,
+      indexed_pages: s.indexed!,
+    };
+  }),
+);
+const keywords: Keyword[] = sites.flatMap((s, i) =>
+  [
+    s.primary_keyword,
+    `${niches[i].toLowerCase()} guide`,
+    `${niches[i].toLowerCase()} reviews`,
+  ].map((keyword, j) => ({
+    id: `kw-${i}-${j}`,
+    site_id: s.id,
+    keyword,
+    position: s.rank! + j * 5,
+    previous: s.rank! + j * 5 + (j === 2 ? -2 : 3),
+    clicks: 820 - i * 70 - j * 80,
+    impressions: 12600 - i * 600 - j * 1100,
+    country: "ID",
+    device: j === 1 ? "mobile" : "desktop",
+    volume: null,
+  })),
+);
+export const demoData: Dataset = {
+  demo: true,
+  sites,
+  metrics,
+  keywords,
+  alerts: [
+    {
+      id: "a1",
+      site_id: "demo-1",
+      title: "Visual Change Detected",
+      message: "Homepage layout differs from the previous capture.",
+      severity: "info",
+      created_at: "2026-10-02T12:00:00Z",
+      status: "open",
+    },
+    {
+      id: "a2",
+      site_id: "demo-3",
+      title: "Sitemap Issue",
+      message: "3 sitemap URLs returned HTTP 404.",
+      severity: "warning",
+      created_at: "2026-10-02T10:00:00Z",
+      status: "open",
+    },
+    {
+      id: "a3",
+      site_id: "demo-4",
+      title: "Traffic Drop Alert",
+      message: "Organic clicks fell 32% versus the previous period.",
+      severity: "critical",
+      created_at: "2026-10-02T08:00:00Z",
+      status: "open",
+    },
+    {
+      id: "a4",
+      site_id: "demo-5",
+      title: "New Ranking Keywords",
+      message: "3 tracked keywords moved into the top 10.",
+      severity: "success",
+      created_at: "2026-10-02T04:00:00Z",
+      status: "open",
+    },
+  ],
+};
