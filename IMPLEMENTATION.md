@@ -13,7 +13,7 @@
 - [x] Clean install, lint, typecheck, production build
 
 ## Deployment gate
-- [x] Browser regression complete (3 Playwright checks)
+- [x] Browser regression complete (4 Playwright checks: site CRUD, navigation/mobile, API restrictions, editorial/keywords/alerts/reports)
 - [x] GitHub feature branch pushed: `feat/index-foundation`, application commit `2af1452`
 - [x] Railway demo deployment healthy; HTTP 200 and all three remote browser flows passed
 - Public demo: https://index-web-production-2e5b.up.railway.app
@@ -24,7 +24,8 @@
 - Browser checks in this execution environment require its HTTPS proxy; normal curl validated TLS and HTTP health.
 
 ## Required before calling v1 production-ready
-- [ ] User selects INDEX Supabase project / organization
+- [x] User selected a new INDEX project in 9dragons Org
+- [ ] Supabase project creation blocked: 9dbit has reached the 2 active free-project limit; preserve Pentagon and Agents Command Center
 - [ ] Migration applied to Supabase; remote advisors clean
 - [ ] Workspace owner provisioned; real email login/logout verified
 - [ ] Persistent CRUD and authorized data access verified live
@@ -32,6 +33,6 @@
 - [ ] GSC / GA4 OAuth and ingest adapters implemented and verified
 - [ ] Pages/crawl, measured vitals and backlink sources activated
 - [ ] Screenshot worker with restricted egress, storage adapter and visual diff
-- [ ] Expand report ranges, content operations and keyword filters
+- [x] Report ranges including Custom, editorial create/edit/move, keyword filters, and alert resolution (demo browser flows and live API code)
 
 Production-ready status remains **NO** while these gates are open. Never mistake public demo availability for connected SEO monitoring.

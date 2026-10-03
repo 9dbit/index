@@ -53,7 +53,7 @@ The frontend only receives the public key. RLS protects all exposed tables. Comp
 
 `app/` owns routes and auth-gated APIs; `features/` contains portfolio, inspector, chart and module UI; `services/` owns database loading and provider contracts; `supabase/migrations/` owns schema history. No service-role key is needed by the web app.
 
-The current build includes working demo portfolio CRUD, keyword table/filtering, score views, alert review, report JSON export and login/server-backed Sites code. Content, backlink, crawl and integration views intentionally show honest empty/disconnected states. GSC/GA4 OAuth, ingestion jobs, remote screenshot worker, visual diff, R2 upload, scheduling and PDF export are **not activated or fully implemented**. Provider contracts and tables are in place; do not advertise these as working integrations.
+The current build includes portfolio CRUD, an editorial board with create/edit/status moves, keyword filters by site/tier/position/movement/country/device, score views, alert resolution, custom-range report JSON export, and login/server-backed Sites/Content/Alerts APIs. Backlink, crawl and integration views intentionally show honest empty/disconnected states. GSC/GA4 OAuth, ingestion jobs, remote screenshot worker, visual diff, R2 upload, scheduling and PDF export are **not activated or fully implemented**. Provider contracts and tables are in place; do not advertise these as working integrations.
 
 Remote screenshot capture must run in an isolated worker with restricted egress and private/link-local/metadata IP blocking at every redirect/resource request. Do not expose arbitrary browser URL capture through the web app. R2 integration is deferred until this worker is deployed.
 

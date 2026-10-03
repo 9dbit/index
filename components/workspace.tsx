@@ -20,7 +20,7 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
-import type { Dataset, Site } from "@/types";
+import type { ContentItem, Dataset, Site } from "@/types";
 import { number } from "@/lib/score";
 import { ranges, summarize, comparison } from "@/lib/metrics";
 import { VisibilityChart } from "@/features/dashboard/chart";
@@ -139,6 +139,63 @@ export function Workspace({
         : [...data.sites, body],
     });
     setNotice("Website saved.");
+  }
+  async function saveContent(values: Partial<ContentItem>, id?: string) {
+    if (data.demo) {
+      const item = id ? data.content.find((c) => c.id === id) : undefined;
+      const updated = {
+        ...item,
+        ...values,
+        id: id ?? crypto.randomUUID(),
+        publish_date: item?.publish_date ?? null,
+        url: item?.url ?? null,
+        quality_score: item?.quality_score ?? null,
+      } as ContentItem;
+      setData((previous) => ({
+        ...previous,
+        content: id
+          ? previous.content.map((c) => (c.id === id ? updated : c))
+          : [...previous.content, updated],
+      }));
+      setNotice("Demo content saved for this session.");
+      return;
+    }
+    const response = await fetch(id ? `/api/content/${id}` : "/api/content", {
+      method: id ? "PATCH" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+    const body = await response.json();
+    if (!response.ok) throw new Error(body.error);
+    setData((previous) => ({
+      ...previous,
+      content: id
+        ? previous.content.map((c) => (c.id === id ? body : c))
+        : [...previous.content, body],
+    }));
+    setNotice("Content item saved.");
+  }
+  async function resolveAlert(id: string) {
+    if (data.demo) {
+      setData((previous) => ({
+        ...previous,
+        alerts: previous.alerts.map((a) =>
+          a.id === id ? { ...a, status: "resolved" } : a,
+        ),
+      }));
+      return;
+    }
+    const response = await fetch(`/api/alerts/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "resolved" }),
+    });
+    const body = await response.json();
+    if (!response.ok) throw new Error(body.error);
+    setData((previous) => ({
+      ...previous,
+      alerts: previous.alerts.map((a) => (a.id === id ? body : a)),
+    }));
   }
   const title = siteId
     ? site?.name
@@ -355,6 +412,8 @@ export function Workspace({
                 route={detailTab.toLowerCase().replaceAll(" ", "-")}
                 data={data}
                 site={site}
+                onContentSave={saveContent}
+                onAlertResolve={resolveAlert}
               />
             )}
           </>
@@ -488,7 +547,12 @@ export function Workspace({
             </div>
           </>
         ) : (
-          <Modules route={route} data={data} />
+          <Modules
+            route={route}
+            data={data}
+            onContentSave={saveContent}
+            onAlertResolve={resolveAlert}
+          />
         )}
         <footer>
           INDEX <span>SEO Command Center</span>

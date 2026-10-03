@@ -32,6 +32,25 @@ test("schema applies and RLS denies cross-workspace reads and writes", async () 
       `update sites set workspace_id='${ws2}' where domain='own.example'`,
     ),
   );
+  const { rows: ownSites } = await db.query<{ id: string }>(
+    "select id from sites where domain='own.example'",
+  );
+  const { rows: foreignSites } = await db.query<{ id: string }>(
+    "select id from sites where domain='other.example'",
+  );
+  assert.equal(foreignSites.length, 0);
+  await db.query(
+    `insert into content_items(workspace_id,site_id,topic) values('${ws}','${ownSites[0].id}','Original research')`,
+  );
+  await assert.rejects(
+    db.query(
+      `insert into content_items(workspace_id,site_id,topic) values('${ws2}','${ownSites[0].id}','Cross workspace')`,
+    ),
+  );
+  const { rows: editorial } = await db.query<{ topic: string }>(
+    "select topic from content_items",
+  );
+  assert.deepEqual(editorial, [{ topic: "Original research" }]);
   await db.exec("reset role");
   const { rows: rls } = await db.query<{ count: number }>(
     "select count(*)::int from pg_tables where schemaname='public' and not rowsecurity",

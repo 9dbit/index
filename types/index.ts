@@ -57,11 +57,34 @@ export type Alert = {
   created_at: string;
   status: "open" | "resolved";
 };
+export const CONTENT_STATES = [
+  "Idea",
+  "Research",
+  "Draft",
+  "Review",
+  "Scheduled",
+  "Published",
+  "Needs Update",
+  "Failed",
+] as const;
+export type ContentState = (typeof CONTENT_STATES)[number];
+export type ContentItem = {
+  id: string;
+  site_id: string;
+  topic: string;
+  keyword: string | null;
+  author: string | null;
+  publish_date: string | null;
+  url: string | null;
+  quality_score: number | null;
+  state: ContentState;
+};
 export type Dataset = {
   sites: Site[];
   metrics: Metric[];
   keywords: Keyword[];
   alerts: Alert[];
+  content: ContentItem[];
   demo: boolean;
   seeded?: boolean;
   workspaceId?: string;

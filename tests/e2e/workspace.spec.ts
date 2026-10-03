@@ -96,3 +96,77 @@ test("health and demo write restrictions", async ({ request }) => {
   ).toBe(403);
   expect((await request.get("/not-a-real-route")).status()).toBe(404);
 });
+test("editorial workflow, keyword filters and alert resolution", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/content", { waitUntil: "networkidle" });
+  await expect(page.locator(".content-card")).toHaveCount(3);
+  await page.getByRole("button", { name: "+ New item" }).click();
+  await page
+    .getByRole("dialog", { name: "New content item" })
+    .getByLabel("Topic")
+    .fill("An original field guide to performance");
+  await page
+    .getByRole("dialog", { name: "New content item" })
+    .getByLabel("Primary keyword")
+    .fill("performance field guide");
+  await page
+    .getByRole("dialog", { name: "New content item" })
+    .getByRole("button", { name: "Save item" })
+    .click();
+  await expect(page.locator(".content-card")).toHaveCount(4);
+  await page
+    .locator(".content-card")
+    .filter({ hasText: "An original field guide" })
+    .click();
+  await page
+    .getByRole("dialog", { name: "Edit content item" })
+    .getByLabel("State")
+    .selectOption("Review");
+  await page
+    .getByRole("dialog", { name: "Edit content item" })
+    .getByRole("button", { name: "Save item" })
+    .click();
+  await expect(
+    page
+      .locator(".kanban>div")
+      .filter({ has: page.getByRole("heading", { name: /Review/ }) })
+      .locator(".content-card"),
+  ).toHaveCount(2);
+  await page.goto("/keywords", { waitUntil: "networkidle" });
+  await page
+    .getByRole("combobox", { name: "Keyword site" })
+    .selectOption("demo-1");
+  await expect(page.locator("tbody tr")).toHaveCount(3);
+  await page
+    .getByRole("combobox", { name: "Keyword movement" })
+    .selectOption("down");
+  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await page.goto("/alerts", { waitUntil: "networkidle" });
+  await page
+    .getByRole("button", { name: "Resolve", exact: true })
+    .first()
+    .click();
+  await expect(page.locator(".alert-row .badge").first()).toHaveText(
+    "resolved",
+  );
+  await page.goto("/reports", { waitUntil: "networkidle" });
+  await page.getByRole("combobox", { name: "Report range" }).selectOption("Custom");
+  await page.getByLabel("Report start date").fill("2026-09-01");
+  await page.getByLabel("Report end date").fill("2026-10-01");
+  await expect(page.getByText("2026-09-01 – 2026-10-01")).toBeVisible();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export summary JSON" }).click();
+  expect((await downloadPromise).suggestedFilename()).toBe("index-network-summary.json");
+  expect(
+    (
+      await request.patch("/api/alerts/a1", { data: { status: "resolved" } })
+    ).status(),
+  ).toBe(403);
+  expect(
+    (
+      await request.post("/api/content", { data: { topic: "Attempt" } })
+    ).status(),
+  ).toBe(403);
+});

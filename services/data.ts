@@ -14,7 +14,14 @@ export async function getData(): Promise<Dataset> {
   if (workspaceError) throw new Error(workspaceError.message);
   const workspaceId = workspaces?.[0]?.id;
   if (!workspaceId)
-    return { demo: false, sites: [], metrics: [], keywords: [], alerts: [] };
+    return {
+      demo: false,
+      sites: [],
+      metrics: [],
+      keywords: [],
+      alerts: [],
+      content: [],
+    };
   const results = await Promise.all([
     db
       .from("sites")
@@ -28,6 +35,11 @@ export async function getData(): Promise<Dataset> {
       .eq("workspace_id", workspaceId)
       .order("created_at", { ascending: false })
       .limit(100),
+    db
+      .from("content_items")
+      .select("*")
+      .eq("workspace_id", workspaceId)
+      .order("topic"),
   ]);
   for (const r of results) if (r.error) throw new Error(r.error.message);
   const metrics: Metric[] = [];
@@ -48,11 +60,14 @@ export async function getData(): Promise<Dataset> {
   }
   return {
     demo: false,
-    seeded: metrics.some(m => (m as Metric & {source?:string}).source === "demo"),
+    seeded: metrics.some(
+      (m) => (m as Metric & { source?: string }).source === "demo",
+    ),
     sites: (results[0].data ?? []) as Site[],
     metrics,
     keywords: results[1].data ?? [],
     alerts: results[2].data ?? [],
+    content: results[3].data ?? [],
     workspaceId,
   } as Dataset;
 }

@@ -67,20 +67,30 @@ for (const site of demoData.sites) {
     const { error } = await db.from("alerts").insert(alerts);
     if (error) throw error;
   }
-  const s = site.scores!;
-  const { error: scoreError } = await db
-    .from("seo_scores")
-    .insert({
-      workspace_id: workspace,
-      site_id: created.id,
-      date: "2026-10-02",
-      technical_score: s.technical,
-      content_score: s.content,
-      index_score: s.index,
-      authority_score: s.authority,
-      performance_score: s.performance,
-      cwv_score: s.cwv,
+  const content = demoData.content
+    .filter((item) => item.site_id === seedId)
+    .map(({ id: oldId, ...item }) => {
+      void oldId;
+      return { ...item, site_id: created.id, workspace_id: workspace };
     });
+  if (content.length) {
+    const { error: contentError } = await db
+      .from("content_items")
+      .insert(content);
+    if (contentError) throw contentError;
+  }
+  const s = site.scores!;
+  const { error: scoreError } = await db.from("seo_scores").insert({
+    workspace_id: workspace,
+    site_id: created.id,
+    date: "2026-10-02",
+    technical_score: s.technical,
+    content_score: s.content,
+    index_score: s.index,
+    authority_score: s.authority,
+    performance_score: s.performance,
+    cwv_score: s.cwv,
+  });
   if (scoreError) throw scoreError;
 }
 console.log("Seed inserted into the selected dedicated demo workspace.");

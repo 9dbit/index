@@ -1420,3 +1420,4 @@ label {
     height: 150px;
   }
 }
+.kanban{grid-template-columns:repeat(4,minmax(0,1fr))}.kanban>div{min-height:145px}.kanban h3{display:flex;justify-content:space-between;margin-bottom:13px}.content-card{display:grid;width:100%;text-align:left;justify-content:stretch;margin:8px 0;padding:12px;background:#172943;border:1px solid #2b4668;border-radius:8px;line-height:1.4}.content-card b{font-size:11px;color:#e2ebfa}.content-card span{font-size:10px;color:#60b1fa;margin-top:10px}.content-card small{font-size:9px;margin-top:6px}.modal h2{margin-bottom:20px}.modal form{display:grid;gap:14px}@media(max-width:1000px){.kanban{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.kanban{grid-template-columns:1fr}}
