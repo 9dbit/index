@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getData } from "@/services/data";
 import { ProposalInbox } from "@/features/proposals/inbox";
+import { AnalysisRunner } from "@/features/proposals/analysis-runner";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ export default async function ProposalsPage() {
         </div>
         <Link href="/">← Back to Command Center</Link>
       </div>
+      <AnalysisRunner />
       <ProposalInbox data={data} />
     </main>
   );
