@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getData } from "@/services/data";
+import { GscControls } from "@/features/integrations/gsc-controls";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,7 @@ export default async function GscSettingsPage({ searchParams }: { searchParams: 
           )}
           <Link href="/proposals"><button>Back to proposals</button></Link>
         </div>
+        <GscControls connected={connected} canDisconnect={data.role === "owner"} />
       </section>
 
       <section className="panel module">
@@ -66,7 +68,7 @@ export default async function GscSettingsPage({ searchParams }: { searchParams: 
         <p style={{ marginTop: 14 }}>Railway variables required:</p>
         <pre style={{ whiteSpace: "pre-wrap" }}>GOOGLE_CLIENT_ID={"<Google OAuth client ID>"}{"\n"}GOOGLE_CLIENT_SECRET={"<Google OAuth client secret>"}</pre>
         <p className="muted" style={{ marginTop: 12 }}>
-          After those two variables are present, return here and press Connect Search Console. INDEX will request only the read-only webmasters scope.
+          After those two variables are present, return here and press Connect Search Console. INDEX will request only the read-only webmasters scope. After authorization, Sync GSC now imports daily Search Console metrics for INDEX domains that match accessible properties.
         </p>
       </section>
     </main>
