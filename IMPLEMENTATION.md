@@ -1,48 +1,120 @@
 # INDEX implementation status
 
-## Implemented and locally checked
-- [x] Next.js / TypeScript application and reusable navy visual system
-- [x] Responsive sidebar, dashboard, charts, portfolio and site inspector
-- [x] Website preview capture assets with hash/viewport metadata
-- [x] Explicit demo dataset and date range aggregation
-- [x] Demo create/edit/archive and validated authenticated Sites API
-- [x] Site detail route, keyword position filters, score views, alerts and summary JSON
-- [x] Supabase cookie clients, session refresh, email login and logout code
-- [x] Workspace schema, roles, RLS and composite foreign-key isolation
-- [x] Local PostgreSQL migration and cross-workspace isolation tests
-- [x] Clean install, lint, typecheck, production build
+## Production
 
-## Deployment gate
-- [x] Browser regression complete (4 Playwright checks: site CRUD, navigation/mobile, API restrictions, editorial/keywords/alerts/reports)
-- [x] GitHub feature branch pushed: `feat/index-foundation`, application commit `2af1452`
-- [x] Railway demo deployment healthy; HTTP 200 and all three remote browser flows passed
-- Application URL (now authenticated live mode): https://index-web-production-2e5b.up.railway.app
-- GitHub draft PR: https://github.com/9dbit/index/pull/1
-- GitHub CI: SUCCESS (run 37063185188)
-- App deployment: SUCCESS (302fb9be-6a84-41d0-96bb-b0c10e7608e1)
-- Live mode without Supabase configuration: dashboard/write routes blocked, health 503
-- Browser checks in this execution environment require its HTTPS proxy; normal curl validated TLS and HTTP health.
+- Railway project: `INDEX`
+- Service: `index-web`
+- Production branch: `feat/index-foundation`
+- Production URL: `https://index-web-production-2e5b.up.railway.app`
+- Supabase project: active and connected
+- Auth: Supabase Auth
+- Database: PostgreSQL with workspace RLS
 
-## Required before calling v1 production-ready
-- [x] Dedicated Supabase project `emzykbjohpylpiovhqey` accessible through the newly connected organization account
-- [x] Tracked migration `20261002201802_index_foundation.sql` applied; remote migration version aligned with the repository
-- [x] All 17 public tables have RLS; security advisor returned no findings
-- [ ] Workspace owner provisioned; real email login/logout verified
-- [ ] Persistent CRUD and authorized data access verified live
-- [ ] Seed data imported into the selected workspace if requested
-- [ ] GSC / GA4 OAuth and ingest adapters implemented and verified
-- [ ] Pages/crawl, measured vitals and backlink sources activated
-- [ ] Screenshot worker with restricted egress, storage adapter and visual diff
-- [x] Report ranges including Custom, editorial create/edit/move, keyword filters, and alert resolution (demo browser flows and live API code)
+## Completed
 
-## Supabase activation verified — 2026-10-04 WIB
-- Railway service `index-web` remains on `feat/index-foundation`, application commit `a3e997240804beb210417ab233f9e9e2b1dbb0fb`.
-- Deployment `cf54154a-8d41-498b-82c8-ab476b86e936` succeeded with Supabase public URL/key, application URL and `INDEX_DEMO_MODE=false`. No service-role credential is needed by the web service.
-- HTTP checks: `/api/health` returned 200 with `{"status":"ok","database":"reachable"}`; `/` returned 307 to `/login`; `/login` returned 200 with the email login form.
-- Created the empty INDEX workspace. A temporary website was committed, read back in a separate database request, then deleted. This verifies database persistence, not application CRUD.
-- Database role checks: anonymous site reads returned zero rows; an authenticated nonmember saw zero workspaces.
-- Auth users are empty. Owner provisioning, successful login/logout, session refresh and authenticated application CRUD remain unverified.
-- Supabase Auth Site URL/redirect configuration still needs verification. The connected Supabase plugin does not expose Auth user management or Auth configuration tools.
-- No demo metrics were seeded into the live database. Pentagon and Agents Command Center were not changed.
+- [x] INDEX command-center foundation and responsive UI
+- [x] Website portfolio and CRUD
+- [x] Keyword, alert, report and content modules
+- [x] Supabase Auth and protected routes
+- [x] Workspace/member roles with RLS
+- [x] Production health endpoint with DB reachability
+- [x] Proposal Inbox persistence
+- [x] Editor proposal / owner approval-rejection workflow
+- [x] Approved proposal → one linked draft gate
+- [x] Manual proposals prevented from claiming measured GSC provenance
+- [x] Deterministic measured-GSC proposal engine
+- [x] Weekly measured-proposal deduplication fingerprint
+- [x] Measured analysis runner endpoint and UI
+- [x] Production behavior when GSC is disconnected: blocked, zero proposals
+- [x] Typecheck, lint, database tests and production build green on latest verified source
 
-Production-ready status remains **NO** while these gates are open. Never mistake public demo availability for connected SEO monitoring.
+## Analysis flow
+
+```text
+Measured provider data
+        ↓
+Evidence validation
+        ↓
+Deterministic analysis rules
+        ↓
+Proposal Inbox
+        ↓
+Owner approve / reject
+        ↓
+Draft creation
+        ↓
+Publisher connector (not connected yet)
+        ↓
+Publish
+        ↓
+Post-publication evaluation
+```
+
+### Current measured GSC rules
+
+The first engine compares the latest 14 days to the preceding 14 days and proposes review when measured data shows:
+
+1. Average position worsening by at least 2 positions with sufficient impressions.
+2. CTR below 2% while average position is between 3 and 20 and impressions are sufficient.
+3. Clicks falling to 70% or less of the prior 14-day period with sufficient prior click volume.
+
+The rule output stores the exact measurements in `proposals.evidence`. It intentionally describes observed signals rather than claiming a cause.
+
+## Release gates
+
+Run on a clean checkout:
+
+```bash
+npm ci
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```
+
+Production smoke checks:
+
+```text
+GET /api/health            → 200, database reachable
+GET /proposals unauth      → redirect /login
+POST /api/analysis/run     → 401 when unauthenticated
+```
+
+An authenticated analysis run currently returns `gsc_not_connected`, which is expected until the Google connector is configured.
+
+## Next work
+
+### P1 — Google Search Console connector
+
+- [ ] Google OAuth client configuration
+- [ ] Read-only scope: `https://www.googleapis.com/auth/webmasters.readonly`
+- [ ] Secure refresh-token storage outside exposed application tables
+- [ ] Search Console site/property selection
+- [ ] Daily query/page/device/country ingestion
+- [ ] Populate `site_metrics_daily` with source `gsc`
+- [ ] Populate tracked keyword rankings from measured query data where applicable
+- [ ] Sync status and failure visibility in INDEX
+
+### P2 — Publisher connectors
+
+- [ ] Per-site publisher adapter contract
+- [ ] Credentials stored outside browser-visible tables
+- [ ] Explicit publish capability state per site
+- [ ] Dry-run / preview before first live publish
+- [ ] Job log, retry and failure visibility
+
+### P3 — Evaluation loop
+
+- [ ] Snapshot baseline when a proposal is approved/published
+- [ ] Measure 7/14/28-day post-change performance
+- [ ] Compare against baseline and seasonality-aware context
+- [ ] Record outcome against proposal/rule
+- [ ] Use accumulated outcomes to rank future proposals, while keeping human approval as a policy gate
+
+## Non-goals / safety constraints
+
+- Never invent GSC/GA4 metrics when a provider is disconnected.
+- Never mark a proposal as measured when its evidence is manual.
+- Never publish merely because a proposal was generated.
+- Never expose OAuth refresh tokens to browser clients.
+- Do not treat correlation after a content change as proof of causation.
