@@ -5,6 +5,7 @@ export async function proxy(request: NextRequest) {
   const allowed = [
     "sites",
     "content",
+    "proposals",
     "keywords",
     "backlinks",
     "performance",
