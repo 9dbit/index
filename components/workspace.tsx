@@ -426,19 +426,23 @@ export function Workspace({
                     ["Websites", active.length, "Portfolio", Globe],
                     [
                       "Total Pages",
-                      active.reduce((a, s) => a + (s.pages ?? 0), 0),
+                      active.some((s) => s.pages != null)
+                        ? active.reduce((a, s) => a + (s.pages ?? 0), 0)
+                        : null,
                       "Reported pages",
                       FileText,
                     ],
                     [
                       "Indexed Pages",
-                      active.reduce((a, s) => a + (s.indexed ?? 0), 0),
+                      active.some((s) => s.indexed != null)
+                        ? active.reduce((a, s) => a + (s.indexed ?? 0), 0)
+                        : null,
                       "Index coverage",
                       ShieldCheck,
                     ],
                     [
                       `${range} Impressions`,
-                      stats.impressions,
+                      stats.series.length ? stats.impressions : null,
                       delta.impressions == null
                         ? "No comparison"
                         : `${delta.impressions >= 0 ? "+" : ""}${delta.impressions.toFixed(1)}% vs previous`,
@@ -446,7 +450,7 @@ export function Workspace({
                     ],
                     [
                       "Organic Clicks",
-                      stats.clicks,
+                      stats.series.length ? stats.clicks : null,
                       delta.clicks == null
                         ? "No comparison"
                         : `${delta.clicks >= 0 ? "+" : ""}${delta.clicks.toFixed(1)}% vs previous`,

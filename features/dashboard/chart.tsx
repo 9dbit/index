@@ -15,6 +15,12 @@ export function VisibilityChart({
   data: { date: string; impressions: number; clicks: number }[];
   compact?: boolean;
 }) {
+  if (!data.length)
+    return (
+      <div className={compact ? "chart compact-chart empty" : "chart empty"}>
+        No visibility data for this period.
+      </div>
+    );
   return (
     <div className={compact ? "chart compact-chart" : "chart"}>
       <ResponsiveContainer width="100%" height="100%">
