@@ -35,6 +35,7 @@ export type Metric = {
   avg_position: number;
   total_pages: number;
   indexed_pages: number;
+  source?: "demo" | "gsc" | "ga4" | "manual";
 };
 export type Keyword = {
   id: string;
@@ -78,6 +79,33 @@ export type ContentItem = {
   url: string | null;
   quality_score: number | null;
   state: ContentState;
+  proposal_id?: string | null;
+};
+export type WorkspaceRole = "owner" | "editor" | "viewer";
+export type ProposalStatus = "proposed" | "approved" | "rejected";
+export type ProposalSource = "manual" | "measured_gsc";
+export type Proposal = {
+  id: string;
+  workspace_id: string;
+  site_id: string;
+  title: string;
+  rationale: string;
+  target_keyword: string | null;
+  evidence: Record<string, unknown>;
+  source: ProposalSource;
+  fingerprint: string | null;
+  status: ProposalStatus;
+  created_by: string | null;
+  decided_by: string | null;
+  decision_note: string | null;
+  decided_at: string | null;
+  created_at: string;
+};
+export type Integration = {
+  provider: "gsc" | "ga4" | "r2" | "crux";
+  status: string;
+  property_id: string | null;
+  last_synced_at: string | null;
 };
 export type Dataset = {
   sites: Site[];
@@ -85,6 +113,9 @@ export type Dataset = {
   keywords: Keyword[];
   alerts: Alert[];
   content: ContentItem[];
+  proposals?: Proposal[];
+  integrations?: Integration[];
+  role?: WorkspaceRole;
   demo: boolean;
   seeded?: boolean;
   workspaceId?: string;
