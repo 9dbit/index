@@ -11,6 +11,7 @@ export default async function Page({
   const allowed = [
     "sites",
     "content",
+    "proposals",
     "keywords",
     "backlinks",
     "performance",
