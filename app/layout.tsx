@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./brand-solid.css";
 export const metadata = {
   title: "INDEX — SEO Command Center",
   description: "Your website network. One clear view.",
