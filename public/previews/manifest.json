@@ -1,0 +1,74 @@
+[
+  {
+    "site_id": "demo-1",
+    "image_url": "/previews/site-1.jpg",
+    "captured_at": "2026-10-02T20:44:52.948Z",
+    "viewport": {
+      "width": 1100,
+      "height": 470
+    },
+    "hash": "986134120d6f9acb14af56ab828583aed69b4b9a331db1724aa9d5c8e695ee57",
+    "visual_change_score": null,
+    "source": "local-demo-html"
+  },
+  {
+    "site_id": "demo-2",
+    "image_url": "/previews/site-2.jpg",
+    "captured_at": "2026-10-02T20:44:52.980Z",
+    "viewport": {
+      "width": 1100,
+      "height": 470
+    },
+    "hash": "11057bd743c2c39a28287c4e5a9d29f19b99c1a50eceb3295da8e8d4f3681386",
+    "visual_change_score": null,
+    "source": "local-demo-html"
+  },
+  {
+    "site_id": "demo-3",
+    "image_url": "/previews/site-3.jpg",
+    "captured_at": "2026-10-02T20:44:53.030Z",
+    "viewport": {
+      "width": 1100,
+      "height": 470
+    },
+    "hash": "39d8f9e96f26d95f4896a339c2d7304423811b0a3dcb8ca68c0e9043fcaa81d6",
+    "visual_change_score": null,
+    "source": "local-demo-html"
+  },
+  {
+    "site_id": "demo-4",
+    "image_url": "/previews/site-4.jpg",
+    "captured_at": "2026-10-02T20:44:53.064Z",
+    "viewport": {
+      "width": 1100,
+      "height": 470
+    },
+    "hash": "888afd4e8dd611d881787b4780bdd3e9b83739da00eb70dd57bc795a97b31182",
+    "visual_change_score": null,
+    "source": "local-demo-html"
+  },
+  {
+    "site_id": "demo-5",
+    "image_url": "/previews/site-5.jpg",
+    "captured_at": "2026-10-02T20:44:53.113Z",
+    "viewport": {
+      "width": 1100,
+      "height": 470
+    },
+    "hash": "5665eebf6a33a7a679d7b5ef5572307cec6735c8b0de5c9bdd140c40affab408",
+    "visual_change_score": null,
+    "source": "local-demo-html"
+  },
+  {
+    "site_id": "demo-6",
+    "image_url": "/previews/site-6.jpg",
+    "captured_at": "2026-10-02T20:44:53.146Z",
+    "viewport": {
+      "width": 1100,
+      "height": 470
+    },
+    "hash": "f2cdb2fdbdd6809762df82df3ee6f66f1ae42595a66dc44ab78a8c60e81bd79e",
+    "visual_change_score": null,
+    "source": "local-demo-html"
+  }
+]
