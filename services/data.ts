@@ -5,6 +5,7 @@ import type {
   Integration,
   Metric,
   NetworkEdge,
+  BuildJob,
   Proposal,
   Site,
   WorkspaceRole,
@@ -34,6 +35,8 @@ export async function getData(): Promise<Dataset> {
       proposals: [],
       integrations: [],
       networkEdges: [],
+      buildJobs: [],
+      provisioningReady: Boolean(process.env.INDEX_PROVISIONING_WEBHOOK && process.env.INDEX_PROVISIONING_TOKEN),
       role: "viewer",
     };
 
@@ -46,6 +49,7 @@ export async function getData(): Promise<Dataset> {
     db.from("integrations").select("provider,status,property_id,last_synced_at").eq("workspace_id", workspaceId),
     db.from("workspace_members").select("role").eq("workspace_id", workspaceId).eq("user_id", auth.user.id).maybeSingle(),
     db.from("site_network_edges").select("*").eq("workspace_id", workspaceId).order("created_at"),
+    db.from("site_build_jobs").select("*").eq("workspace_id", workspaceId).order("created_at", { ascending: false }),
   ]);
   for (const result of results) if (result.error) throw new Error(result.error.message);
 
@@ -78,6 +82,8 @@ export async function getData(): Promise<Dataset> {
     integrations: (results[5].data ?? []) as Integration[],
     role: (results[6].data?.role ?? "viewer") as WorkspaceRole,
     networkEdges: (results[7].data ?? []) as NetworkEdge[],
+    buildJobs: (results[8].data ?? []) as BuildJob[],
+    provisioningReady: Boolean(process.env.INDEX_PROVISIONING_WEBHOOK && process.env.INDEX_PROVISIONING_TOKEN),
     workspaceId,
   } as Dataset;
 }
