@@ -122,6 +122,22 @@ export type NetworkEdge = {
   created_at: string;
   updated_at: string;
 };
+export type BuildJob = {
+  id: string;
+  workspace_id: string;
+  site_id: string;
+  status: "queued" | "scaffolding" | "repo_ready" | "deploying" | "live" | "blocked" | "failed";
+  provider: string;
+  requested_by: string | null;
+  repo_url: string | null;
+  deployment_url: string | null;
+  next_action: string | null;
+  last_error: string | null;
+  details: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Integration = {
   provider: "gsc" | "ga4" | "r2" | "crux";
   status: string;
@@ -137,6 +153,8 @@ export type Dataset = {
   proposals?: Proposal[];
   integrations?: Integration[];
   networkEdges?: NetworkEdge[];
+  buildJobs?: BuildJob[];
+  provisioningReady?: boolean;
   role?: WorkspaceRole;
   demo: boolean;
   seeded?: boolean;
