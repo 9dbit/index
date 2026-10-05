@@ -10,6 +10,8 @@ export default async function Page({
   const { path = [] } = await params;
   const allowed = [
     "sites",
+    "registry",
+    "network",
     "content",
     "proposals",
     "keywords",

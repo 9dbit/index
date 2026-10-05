@@ -4,6 +4,7 @@ import type {
   Dataset,
   Integration,
   Metric,
+  NetworkEdge,
   Proposal,
   Site,
   WorkspaceRole,
@@ -32,6 +33,7 @@ export async function getData(): Promise<Dataset> {
       content: [],
       proposals: [],
       integrations: [],
+      networkEdges: [],
       role: "viewer",
     };
 
@@ -43,6 +45,7 @@ export async function getData(): Promise<Dataset> {
     db.from("proposals").select("*").eq("workspace_id", workspaceId).order("created_at", { ascending: false }),
     db.from("integrations").select("provider,status,property_id,last_synced_at").eq("workspace_id", workspaceId),
     db.from("workspace_members").select("role").eq("workspace_id", workspaceId).eq("user_id", auth.user.id).maybeSingle(),
+    db.from("site_network_edges").select("*").eq("workspace_id", workspaceId).order("created_at"),
   ]);
   for (const result of results) if (result.error) throw new Error(result.error.message);
 
@@ -74,6 +77,7 @@ export async function getData(): Promise<Dataset> {
     proposals: (results[4].data ?? []) as Proposal[],
     integrations: (results[5].data ?? []) as Integration[],
     role: (results[6].data?.role ?? "viewer") as WorkspaceRole,
+    networkEdges: (results[7].data ?? []) as NetworkEdge[],
     workspaceId,
   } as Dataset;
 }

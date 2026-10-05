@@ -5,6 +5,8 @@ import { number, seoScore, weights } from "@/lib/score";
 import { VisibilityChart } from "@/features/dashboard/chart";
 import { ranges, summarize, summarizeBetween } from "@/lib/metrics";
 import { ContentBoard } from "@/features/content/board";
+import { WebsiteRegistry } from "@/features/sites/registry";
+import { TierNetworkMap } from "@/features/network/map";
 export function Modules({
   route,
   data,
@@ -32,6 +34,8 @@ export function Modules({
   const sites = site ? [site] : data.sites;
   const ids = new Set(sites.map((s) => s.id));
   const keywords = data.keywords.filter((k) => ids.has(k.site_id));
+  if (route === "registry") return <WebsiteRegistry data={data} />;
+  if (route === "network") return <TierNetworkMap data={data} />;
   if (route === "keywords")
     return (
       <section className="panel module">

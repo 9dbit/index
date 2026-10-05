@@ -8,6 +8,7 @@ import {
   BarChart3,
   Bell,
   ChevronLeft,
+  Database,
   FileText,
   Globe,
   House,
@@ -17,6 +18,7 @@ import {
   Menu,
   Search,
   Settings,
+  Share2,
   ShieldCheck,
   X,
 } from "lucide-react";
@@ -32,6 +34,8 @@ import { browserClient } from "@/lib/supabase/client";
 const navigation = [
   ["overview", "Overview", House],
   ["sites", "Sites", Globe],
+  ["registry", "Registry", Database],
+  ["network", "Tier Network", Share2],
   ["content", "Content", FileText],
   ["keywords", "Keywords", KeyRound],
   ["backlinks", "Backlinks", Link2],

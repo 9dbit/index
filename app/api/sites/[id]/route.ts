@@ -24,6 +24,15 @@ export async function PATCH(
     .from("sites")
     .update({
       ...parsed.data,
+      ...(parsed.data.repo_url !== undefined
+        ? { repo_url: parsed.data.repo_url || null }
+        : {}),
+      ...(parsed.data.cms_url !== undefined
+        ? { cms_url: parsed.data.cms_url || null }
+        : {}),
+      ...(parsed.data.hosting_provider !== undefined
+        ? { hosting_provider: parsed.data.hosting_provider || null }
+        : {}),
       ...(parsed.data.url ? { domain: new URL(parsed.data.url).hostname } : {}),
     })
     .eq("id", id)

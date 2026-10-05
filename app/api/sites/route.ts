@@ -34,6 +34,12 @@ export async function POST(req: Request) {
     .from("sites")
     .insert({
       ...parsed.data,
+      repo_url: parsed.data.repo_url || null,
+      cms_url: parsed.data.cms_url || null,
+      hosting_provider: parsed.data.hosting_provider || null,
+      build_status:
+        parsed.data.build_status ??
+        (parsed.data.onboarding_mode === "create" ? "planned" : "connected"),
       domain: new URL(parsed.data.url).hostname,
       workspace_id: ws.id,
     })

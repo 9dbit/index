@@ -26,6 +26,14 @@ export type Site = {
   pages: number | null;
   indexed: number | null;
   growth: number | null;
+  onboarding_mode?: "create" | "connect";
+  platform?: "nextjs" | "wordpress" | "static" | "webflow" | "other";
+  hosting_provider?: string | null;
+  repo_url?: string | null;
+  cms_url?: string | null;
+  build_status?: "planned" | "provisioning" | "connected" | "live" | "blocked";
+  publisher_status?: "not_configured" | "ready" | "blocked";
+  notes?: string;
 };
 export type Metric = {
   site_id: string;
@@ -101,6 +109,19 @@ export type Proposal = {
   decided_at: string | null;
   created_at: string;
 };
+export type NetworkEdge = {
+  id: string;
+  workspace_id: string;
+  source_site_id: string;
+  target_site_id: string;
+  relation: "supports";
+  anchor_text: string;
+  target_path: string;
+  status: "planned" | "active" | "paused";
+  notes: string;
+  created_at: string;
+  updated_at: string;
+};
 export type Integration = {
   provider: "gsc" | "ga4" | "r2" | "crux";
   status: string;
@@ -115,6 +136,7 @@ export type Dataset = {
   content: ContentItem[];
   proposals?: Proposal[];
   integrations?: Integration[];
+  networkEdges?: NetworkEdge[];
   role?: WorkspaceRole;
   demo: boolean;
   seeded?: boolean;
