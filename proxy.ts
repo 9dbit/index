@@ -6,6 +6,7 @@ export async function proxy(request: NextRequest) {
     "sites",
     "registry",
     "network",
+    "builder",
     "content",
     "proposals",
     "keywords",
