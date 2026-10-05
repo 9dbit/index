@@ -62,6 +62,7 @@ export function WebsiteRegistry({ data }: { data: Dataset }) {
           <p>One inventory for planned builds and connected websites.</p>
         </div>
         <div className={styles.actions}>
+          <Link href="/builder"><button>Site Builder</button></Link>
           <button disabled={!canEdit} onClick={() => setMode("connect")}><PlugZap size={15} /> Connect Website</button>
           <button className="primary" disabled={!canEdit} onClick={() => setMode("create")}><Plus size={15} /> Create New Website</button>
         </div>
