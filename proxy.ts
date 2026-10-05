@@ -4,6 +4,8 @@ export async function proxy(request: NextRequest) {
   const parts = request.nextUrl.pathname.split("/").filter(Boolean);
   const allowed = [
     "sites",
+    "registry",
+    "network",
     "content",
     "proposals",
     "keywords",
